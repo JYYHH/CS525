@@ -164,6 +164,20 @@ struct node *Lazy_Delete(struct node *v_r, int value){ // there's possiblity tha
         return v_r;
 }
 
+/*
+    Part 4: Q_1.3
+*/
+
+int look_up(struct node *v_r, int value){
+    if (v_r == NULL)
+        return 0;
+    if (value < v_r->val)
+        return look_up(v_r->left, value);
+    else if (value > v_r->val)
+        return look_up(v_r->right, value);
+    else
+        return 1 - v_r->tag;
+}
 
 int main(){
     struct node *root;
@@ -198,7 +212,12 @@ int main(){
     /*
         Q_1.3
     */
-    
+    printf("%d\n", look_up(root, 1));
+    printf("%d\n", look_up(root, 6));
+    printf("%d\n", look_up(root, 10));
+    printf("%d\n", look_up(root, 5));
+    printf("%d\n", look_up(root, 8));
+    printf("%d\n", look_up(root, 9));
 
 
     return 0;
