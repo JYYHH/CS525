@@ -6,6 +6,7 @@
 struct node{
     struct node *left, *right;
     int val, size;
+    int tag, tag_size;
 };
 
 /*
@@ -16,8 +17,17 @@ int get_size(struct node *v_r){
     return v_r == NULL ? 0 : v_r->size;
 }
 
+int get_tag_size(struct node *v_r){
+    return v_r == NULL ? 0 : v_r->tag_size;
+}
+
+int get_real_size(struct node *v_r){
+    return get_size(v_r) - get_tag_size(v_r);
+}
+
 void _maintain(struct node *v_r){
     v_r->size = get_size(v_r->left) + get_size(v_r->right) + 1;
+    v_r->tag_size = get_tag_size(v_r->left) + get_tag_size(v_r->right) + v_r->tag;
 }
 
 void print_off(int offset){
@@ -28,6 +38,8 @@ void display(struct node *v_r, int offset){
     print_off(offset), printf("Present subtree begin---->\n");
     print_off(offset), printf("Root value = %d\n", v_r->val);
     print_off(offset), printf("Subtree size = %d\n", v_r->size);
+    print_off(offset), printf("Tag value = %d\n", v_r->tag);
+    print_off(offset), printf("Subtree TAG size = %d\n", v_r->tag_size);
     print_off(offset), printf("Left sub tree:\n");
     if (v_r->left) display(v_r->left, offset + 2);
     else puts("");
@@ -44,8 +56,10 @@ void display(struct node *v_r, int offset){
 void dfs_up(struct node *v_r, int *val_list, int *cnt_pt){
     if (v_r->left)
         dfs_up(v_r->left, val_list, cnt_pt);
-    val_list[*cnt_pt] = v_r->val;
-    (*cnt_pt) ++;
+    if (v_r->tag == 0){
+        val_list[*cnt_pt] = v_r->val;
+        (*cnt_pt) ++;
+    }
     if (v_r->right)
         dfs_up(v_r->right, val_list, cnt_pt);
     // recycle useless memory
@@ -56,6 +70,8 @@ struct node *re_build(int *val_list, int cnt){
     struct node *ret = (struct node *) malloc(sizeof(struct node));
     ret->size = 1;
     ret->val = val_list[cnt >> 1];
+    ret->tag = 0;
+    ret->tag_size = 0;
 
     if (cnt >= 2)
         ret->left = re_build(val_list, cnt >> 1);
@@ -77,9 +93,15 @@ struct node *reconstruct(struct node *v_r){
         It can be proved for any value list, there's only one tree satisfied this conditions.
         So I rebuild all the input trees, EVEN for that only balanced one (in my definition).
             But that one will remain identical after the rebuilding..
+
+        update: ADD SUPPORT FOR THE TAGGED TREE
     */
 
-    int *val_list = (int *) malloc(sizeof(int) * v_r->size);
+    // empty sub tree
+    if (get_real_size(v_r) == 0)
+        return NULL;
+
+    int *val_list = (int *) malloc(sizeof(int) * get_real_size(v_r));
     int cnt = 0;
     struct node *ret;
 
@@ -100,6 +122,8 @@ struct node *Lazy_Insert(struct node *v_r, int value){ // in this hw, values wil
         tmp->val = value;
         tmp->size = 1;
         tmp->left = tmp->right = NULL;
+        tmp->tag = 0;
+        tmp->tag_size = 0;
         return tmp;
     }
     // not empty
@@ -107,10 +131,10 @@ struct node *Lazy_Insert(struct node *v_r, int value){ // in this hw, values wil
         v_r->left = Lazy_Insert(v_r->left, value);
     else
         v_r->right = Lazy_Insert(v_r->right, value);
-    v_r->size ++;
+    _maintain(v_r);
 
     // possible reconstruct
-    if (abs(get_size(v_r->left) - get_size(v_r->right)) * 3 >= get_size(v_r))
+    if (abs(get_real_size(v_r->left) - get_real_size(v_r->right)) * 3 >= get_real_size(v_r))
         return reconstruct(v_r);
     else
         return v_r;
@@ -123,7 +147,21 @@ struct node *Lazy_Insert(struct node *v_r, int value){ // in this hw, values wil
 struct node *Lazy_Delete(struct node *v_r, int value){ // there's possiblity that value is not in this whole tree..
     if (v_r == NULL)
         return v_r;
-    
+    if (value < v_r->val)
+        v_r->left = Lazy_Delete(v_r->left, value);
+    else if (value > v_r->val)
+        v_r->right = Lazy_Delete(v_r->right, value);
+    else{
+        // should delete this node, if it's still here?
+        // can be tag not only once, besides the first time it should be identical to nothing.
+        v_r->tag = 1;
+    }
+    _maintain(v_r);
+
+    if (get_tag_size(v_r) * 2 >= get_size(v_r))
+        return reconstruct(v_r);
+    else
+        return v_r;
 }
 
 
@@ -149,6 +187,19 @@ int main(){
     /*
         Q_1.2
     */
+    root = Lazy_Delete(root, 7);
+    root = Lazy_Delete(root, 0);
+    root = Lazy_Delete(root, 6);
+    root = Lazy_Delete(root, 2);
+    root = Lazy_Delete(root, 10);
+
+    // display(root, 0);
+
+    /*
+        Q_1.3
+    */
+    
+
 
     return 0;
 }
