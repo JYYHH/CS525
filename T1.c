@@ -181,6 +181,7 @@ struct node *Lazy_Delete(struct node *v_r, int value){ // there's possiblity tha
     }
     _maintain(v_r);
 
+    // possible reconstruct
     if (need_reconstruct(v_r))
         return reconstruct(v_r);
     else
@@ -242,6 +243,19 @@ int main(){
     printf("%d\n", look_up(root, 8));
     printf("%d\n", look_up(root, 9));
 
+    // /*
+    //     My Speed Test
+    // */
+    // int N = 4 * 1e5;
+    // for (int i = 1; i <= N; i++) 
+    //     root = Lazy_Insert(root, i);
+    // for (int i = N/2; i <= N - 100; i++)
+    //     root = Lazy_Delete(root, i);
+    // int cnt = 0;
+    // for (int i = 1; i <= N; i++){
+    //     cnt += (look_up(root, i)!=(i < N/2 || i > N - 100));
+    // }
+    // printf("%d\n", cnt);
 
     return 0;
 }
