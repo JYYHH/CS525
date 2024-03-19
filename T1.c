@@ -30,6 +30,29 @@ void _maintain(struct node *v_r){
     v_r->tag_size = get_tag_size(v_r->left) + get_tag_size(v_r->right) + v_r->tag;
 }
 
+int need_reconstruct(struct node *v_r){
+    return 
+        (
+            abs(
+                get_real_size(v_r->left) 
+                    - 
+                get_real_size(v_r->right)
+            ) 
+                * 
+            3 
+                >= 
+            get_real_size(v_r)
+        )
+        ||
+        (
+            get_tag_size(v_r) 
+                * 
+            2 
+                >= 
+            get_size(v_r)
+        );
+}
+
 void print_off(int offset){
     while(offset--) putchar(' ');
 }
@@ -134,7 +157,7 @@ struct node *Lazy_Insert(struct node *v_r, int value){ // in this hw, values wil
     _maintain(v_r);
 
     // possible reconstruct
-    if (abs(get_real_size(v_r->left) - get_real_size(v_r->right)) * 3 >= get_real_size(v_r))
+    if (need_reconstruct(v_r))
         return reconstruct(v_r);
     else
         return v_r;
@@ -158,7 +181,7 @@ struct node *Lazy_Delete(struct node *v_r, int value){ // there's possiblity tha
     }
     _maintain(v_r);
 
-    if (get_tag_size(v_r) * 2 >= get_size(v_r))
+    if (need_reconstruct(v_r))
         return reconstruct(v_r);
     else
         return v_r;
