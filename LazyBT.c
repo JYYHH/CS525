@@ -150,10 +150,18 @@ struct node *Lazy_Insert(struct node *v_r, int value){ // in this hw, values wil
         return tmp;
     }
     // not empty
-    if (value <= v_r->val)
+    if (value < v_r->val)
         v_r->left = Lazy_Insert(v_r->left, value);
-    else
+    else if (value > v_r->val)
         v_r->right = Lazy_Insert(v_r->right, value);
+    else{
+        // fix a bug here, though in hw it won't happen, but in my test case it will happen
+        // find this bug for so long time...
+        // in my test bench, I ensure that in ANY TIME, there won't be two values in common in the tree.
+        //      But there's a possibility that a value insert->delete->insert again.
+        //      This circumstance is illegal in hw('s description), but possible in my data_gen.c
+        v_r->tag = 0;
+    }
     _maintain(v_r);
 
     // possible reconstruct
@@ -203,45 +211,64 @@ int look_up(struct node *v_r, int value){
         return 1 - v_r->tag;
 }
 
-int main(){
+void handler(){
     struct node *root;
-    /*
-        Q_1.1
-    */
-    root = Lazy_Insert(root, 8);
-    root = Lazy_Insert(root, 7);
-    root = Lazy_Insert(root, 9);
-    root = Lazy_Insert(root, 1);
-    root = Lazy_Insert(root, 5);
-    root = Lazy_Insert(root, 2);
-    root = Lazy_Insert(root, 6);
-    root = Lazy_Insert(root, 3);
-    root = Lazy_Insert(root, 4);
-    root = Lazy_Insert(root, 0);
+    int opt, val;
+    while(scanf("%d %d", &opt, &val) == 2){
+        if (opt == 1){
+            // Insert
+            root = Lazy_Insert(root, val);
+        }
+        else if (opt == 2){
+            // Delete
+            root = Lazy_Delete(root, val);
+        }
+        else if (opt == 3){
+            // look_up
+            printf("%d\n", look_up(root, val));
+        }
+    }
+}
 
-    // display(root, 0);
+int main(){
+    // struct node *root;
+    // /*
+    //     Q_1.1
+    // */
+    // root = Lazy_Insert(root, 8);
+    // root = Lazy_Insert(root, 7);
+    // root = Lazy_Insert(root, 9);
+    // root = Lazy_Insert(root, 1);
+    // root = Lazy_Insert(root, 5);
+    // root = Lazy_Insert(root, 2);
+    // root = Lazy_Insert(root, 6);
+    // root = Lazy_Insert(root, 3);
+    // root = Lazy_Insert(root, 4);
+    // root = Lazy_Insert(root, 0);
+
+    // // display(root, 0);
 
 
-    /*
-        Q_1.2
-    */
-    root = Lazy_Delete(root, 7);
-    root = Lazy_Delete(root, 0);
-    root = Lazy_Delete(root, 6);
-    root = Lazy_Delete(root, 2);
-    root = Lazy_Delete(root, 10);
+    // /*
+    //     Q_1.2
+    // */
+    // root = Lazy_Delete(root, 7);
+    // root = Lazy_Delete(root, 0);
+    // root = Lazy_Delete(root, 6);
+    // root = Lazy_Delete(root, 2);
+    // root = Lazy_Delete(root, 10);
 
-    // display(root, 0);
+    // // display(root, 0);
 
-    /*
-        Q_1.3
-    */
-    printf("%d\n", look_up(root, 1));
-    printf("%d\n", look_up(root, 6));
-    printf("%d\n", look_up(root, 10));
-    printf("%d\n", look_up(root, 5));
-    printf("%d\n", look_up(root, 8));
-    printf("%d\n", look_up(root, 9));
+    // /*
+    //     Q_1.3
+    // */
+    // printf("%d\n", look_up(root, 1));
+    // printf("%d\n", look_up(root, 6));
+    // printf("%d\n", look_up(root, 10));
+    // printf("%d\n", look_up(root, 5));
+    // printf("%d\n", look_up(root, 8));
+    // printf("%d\n", look_up(root, 9));
 
     // /*
     //     My Speed Test
@@ -256,6 +283,11 @@ int main(){
     //     cnt += (look_up(root, i)!=(i < N/2 || i > N - 100));
     // }
     // printf("%d\n", cnt);
+
+    /*
+        My correctness bench
+    */
+    handler();
 
     return 0;
 }
