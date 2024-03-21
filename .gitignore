@@ -1,3 +1,2 @@
-*.out
-*.in
-*.ans
+bin/*
+data/*

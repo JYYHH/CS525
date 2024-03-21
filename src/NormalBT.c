@@ -12,6 +12,7 @@ struct node *new_node(int value){
     struct node *ret = (struct node *) malloc(sizeof(struct node));
     ret->left = ret->right = NULL;
     ret->val = value;
+    return ret;
 }
 
 void print_off(int offset){
@@ -107,44 +108,9 @@ void handler(){
 }
 
 int main(){
-    // struct node *root;
-    // /*
-    //     Q_1.1
-    // */
-    // root = Insert(root, 8);
-    // root = Insert(root, 7);
-    // root = Insert(root, 9);
-    // root = Insert(root, 1);
-    // root = Insert(root, 5);
-    // root = Insert(root, 2);
-    // root = Insert(root, 6);
-    // root = Insert(root, 3);
-    // root = Insert(root, 4);
-    // root = Insert(root, 0);
-
-    // // display(root, 0);
-
-
-    // /*
-    //     Q_1.2
-    // */
-    // root = Delete(root, 7);
-    // root = Delete(root, 0);
-    // root = Delete(root, 6);
-    // root = Delete(root, 2);
-    // root = Delete(root, 10);
-
-    // // display(root, 0);
-
-    // /*
-    //     Q_1.3
-    // */
-    // printf("%d\n", look_up(root, 1));
-    // printf("%d\n", look_up(root, 6));
-    // printf("%d\n", look_up(root, 10));
-    // printf("%d\n", look_up(root, 5));
-    // printf("%d\n", look_up(root, 8));
-    // printf("%d\n", look_up(root, 0));
+    /*
+        My correctness bench
+    */
 
     handler();
 

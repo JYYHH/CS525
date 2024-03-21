@@ -231,59 +231,6 @@ void handler(){
 }
 
 int main(){
-    // struct node *root;
-    // /*
-    //     Q_1.1
-    // */
-    // root = Lazy_Insert(root, 8);
-    // root = Lazy_Insert(root, 7);
-    // root = Lazy_Insert(root, 9);
-    // root = Lazy_Insert(root, 1);
-    // root = Lazy_Insert(root, 5);
-    // root = Lazy_Insert(root, 2);
-    // root = Lazy_Insert(root, 6);
-    // root = Lazy_Insert(root, 3);
-    // root = Lazy_Insert(root, 4);
-    // root = Lazy_Insert(root, 0);
-
-    // // display(root, 0);
-
-
-    // /*
-    //     Q_1.2
-    // */
-    // root = Lazy_Delete(root, 7);
-    // root = Lazy_Delete(root, 0);
-    // root = Lazy_Delete(root, 6);
-    // root = Lazy_Delete(root, 2);
-    // root = Lazy_Delete(root, 10);
-
-    // // display(root, 0);
-
-    // /*
-    //     Q_1.3
-    // */
-    // printf("%d\n", look_up(root, 1));
-    // printf("%d\n", look_up(root, 6));
-    // printf("%d\n", look_up(root, 10));
-    // printf("%d\n", look_up(root, 5));
-    // printf("%d\n", look_up(root, 8));
-    // printf("%d\n", look_up(root, 9));
-
-    // /*
-    //     My Speed Test
-    // */
-    // int N = 3 * 1e5;
-    // for (int i = 1; i <= N; i++) 
-    //     root = Lazy_Insert(root, i);
-    // for (int i = N/2; i <= N - 100; i++)
-    //     root = Lazy_Delete(root, i);
-    // int cnt = 0;
-    // for (int i = 1; i <= N; i++){
-    //     cnt += (look_up(root, i)!=(i < N/2 || i > N - 100));
-    // }
-    // printf("%d\n", cnt);
-
     /*
         My correctness bench
     */
