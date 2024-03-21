@@ -8,6 +8,8 @@
 int at_tree[M + 5];
 
 int main(int argc, char **argv){
+    // Insert : Delete : look_up ~= 2 : 1 : 1
+    // Delete Empty (not in the tree) Pr{} ~= 1 / 16
     srand(time(0));
     int N = atoi(argv[1]), m = atoi(argv[2]);
     int opt, val;
