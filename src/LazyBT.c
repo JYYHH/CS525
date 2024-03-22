@@ -30,6 +30,14 @@ void _maintain(struct node *v_r){
     v_r->tag_size = get_tag_size(v_r->left) + get_tag_size(v_r->right) + v_r->tag;
 }
 
+void free_tree(struct node *v_r){
+    if (v_r == NULL)
+        return;
+    free_tree(v_r->left);
+    free_tree(v_r->right);
+    free(v_r);
+}
+
 int need_reconstruct(struct node *v_r){
     return 
         (
@@ -228,6 +236,8 @@ void handler(){
             printf("%d\n", look_up(root, val));
         }
     }
+
+    free_tree(root);
 }
 
 int main(){

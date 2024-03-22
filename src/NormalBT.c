@@ -15,6 +15,14 @@ struct node *new_node(int value){
     return ret;
 }
 
+void free_tree(struct node *v_r){
+    if (v_r == NULL)
+        return;
+    free_tree(v_r->left);
+    free_tree(v_r->right);
+    free(v_r);
+}
+
 void print_off(int offset){
     while(offset--) putchar(' ');
 }
@@ -105,6 +113,8 @@ void handler(){
             printf("%d\n", look_up(root, val));
         }
     }
+
+    free_tree(root);
 }
 
 int main(){
