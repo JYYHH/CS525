@@ -15,7 +15,7 @@ struct node{
 /*
     Thread Control Global Vars Definition
 */
-#define MAX_THREAD_COUNT 1
+#define MAX_THREAD_COUNT_UPPER 128
 pthread_t *thread_arr;
 pthread_mutex_t *read_mutex;
 struct node *root;
@@ -165,9 +165,11 @@ void *handler(void *null){
     }
 }
 
-int main(){
+int main(int argc, char **argv){
+    const int MAX_THREAD_COUNT = atoi(argv[1]);
+
     // allocate the space for the global thread control variables
-    thread_arr = (pthread_t *) malloc(sizeof(pthread_t) * MAX_THREAD_COUNT);
+    thread_arr = (pthread_t *) malloc(sizeof(pthread_t) * MAX_THREAD_COUNT_UPPER);
     read_mutex = (pthread_mutex_t *) malloc(sizeof(pthread_mutex_t));
     // init mutex
     pthread_mutex_init(read_mutex, NULL);
