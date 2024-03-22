@@ -1,3 +1,9 @@
+## 0. Initilize
+```bash
+mkdir bin
+mkdir data
+```
+
 ## 1. How to compile the source files
 ```bash
 make
@@ -8,7 +14,7 @@ make
 make clean
 ```
 
-## 2. Directly run the target program
+## 2. Run raw bin
 ### 2.1 Data Generator: `datagen.run`
 ```bash
 ./datagen.run $number_of_operations $upper_bound_of_value > $data_file
@@ -34,6 +40,7 @@ make clean
 ```bash
 bash comp_correct.sh $number_of_operations $upper_bound_of_value $prog1 $prog2
 ```
+- ___For the purpose of hw3's Part 3, just type `bash comp_correct.sh 3000000 1000000 lazy normal`___
 - This script will run an infinite loop to compare the output of $prog1 and $prog2.
 - Every time inside the loop, it will:
     1. generate data based on  $number_of_operations and $upper_bound_of_value, store it in `$DATA_DIR/in.in`
@@ -49,3 +56,10 @@ bash running_time_collect.sh
 ```
 
 - Collect the running time of `parallel.run` based on data generated in 3.1, and with thread number from 1 to 128.
+
+### 3.3 Draw figure using python
+- ___(You must finish 3.2's running before this section, to generate profiling result)___
+```bash
+python draw_exp_result.py
+```
+- Show the figure

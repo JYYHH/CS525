@@ -1,4 +1,5 @@
 Tar=bin/parallel.run
+Tar_lazy=bin/lazy.run
 data=data/in.in
 out_file=tmp.tmp
 log_file=log.tmp
@@ -20,4 +21,10 @@ do
     then 
         break
     fi
+done
+
+# Finally, measure the lazy's running time
+for i in {1..5}
+do 
+    { time ./$Tar_lazy < $data > $out_file; } 2>>$log_file
 done
