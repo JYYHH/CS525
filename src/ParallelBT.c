@@ -166,7 +166,11 @@ void *handler(void *null){
 }
 
 int main(int argc, char **argv){
-    const int MAX_THREAD_COUNT = atoi(argv[1]);
+    int MAX_THREAD_COUNT;
+    if (argc > 1) 
+        MAX_THREAD_COUNT = atoi(argv[1]);
+    else // default no parallel
+        MAX_THREAD_COUNT = 1;
 
     // allocate the space for the global thread control variables
     thread_arr = (pthread_t *) malloc(sizeof(pthread_t) * MAX_THREAD_COUNT_UPPER);
@@ -174,7 +178,7 @@ int main(int argc, char **argv){
     // init mutex
     pthread_mutex_init(read_mutex, NULL);
     // init the global minimum virtual root
-    root = new_node(~0);
+    root = new_node(1 << 31);
     
     // feed all the thread in thread_pool with an initial routine
     for (int i = 0; i < MAX_THREAD_COUNT; i++)

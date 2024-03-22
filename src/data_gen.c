@@ -9,7 +9,7 @@ int at_tree[M + 5];
 
 int main(int argc, char **argv){
     // Insert : Delete : look_up ~= 2 : 1 : 1
-    // Delete Empty (not in the tree) Pr{} ~= 1 / 16
+    // Delete Empty (not in the tree) Pr{} ~= 1 / 2
     srand(time(0));
     int N = atoi(argv[1]), m = atoi(argv[2]);
     int opt, val;
@@ -25,8 +25,8 @@ int main(int argc, char **argv){
             printf("%d %d\n", 1, val);
         }
         else if (opt >= 4){
-            if (!at_tree[val] && ((rand() & 0xf) != 0xf)){
-                // control the Delete empty rate into 1/16
+            if (!at_tree[val] && ((rand() & 0xf) < 0x8)){
+                // control the Delete empty rate into 1/2
                 N++;
                 continue;
             }

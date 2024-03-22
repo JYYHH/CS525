@@ -107,7 +107,7 @@ void Delete(struct node *v_r, int value, struct node *v_r_fa, int child){
 
 void handler(){
     // add a virtual global minimum root, which can help our later parallel programming.
-    struct node *root = new_node(~0);
+    struct node *root = new_node(1 << 31);
         // and passed the test against LazyBT
     int opt, val;
     while(scanf("%d %d", &opt, &val) == 2){

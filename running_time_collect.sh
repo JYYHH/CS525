@@ -10,7 +10,7 @@ while [ 1 ]
 do  
     let cnt+=1
 
-    # Run 6 times, and average the run time
+    # Run 5 times, and average the run time
     for i in {1..5}
     do 
         { time ./$Tar $cnt < $data > $out_file; } 2>>$log_file
