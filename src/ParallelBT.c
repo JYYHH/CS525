@@ -7,6 +7,8 @@
 struct node{
     struct node *left, *right;
     pthread_mutex_t *subtree_pass;
+        // retaining this lock, means that PRESENT THREAD have the possibility to modify ANY node's info inside this subtree
+        // releasing this lock, means that we gain more info to make sure the possibility MUST happen in left of right child subtree
     int val, tag;
 };
 
@@ -58,10 +60,11 @@ void enter_function(struct node * v_r, struct node * v_r_fa){
     pthread_mutex_unlock(v_r_fa->subtree_pass);
 }
 
-void exit_function(struct node * v_r, struct node * v_r_fa){
-    pthread_mutex_unlock(v_r->subtree_pass);
-    pthread_mutex_lock(v_r_fa->subtree_pass);
-}
+// useless for this simple dfs pattern
+// void exit_function(struct node * v_r, struct node * v_r_fa){
+//     pthread_mutex_unlock(v_r->subtree_pass);
+//     pthread_mutex_lock(v_r_fa->subtree_pass);
+// }
 
 void display(struct node *v_r, int offset){
     print_off(offset), printf("Present subtree begin---->\n");
@@ -90,6 +93,7 @@ void Insert(struct node *v_r, int value, struct node *v_r_fa, int child){
     if (v_r == NULL){
         // use the lock of father to protect the insert
         *get_fa2chd_pointer(v_r_fa, child) = new_node(value);
+        pthread_mutex_unlock(v_r_fa->subtree_pass); // important, don't forget to release the father's lock
         return;
     }
 
@@ -102,15 +106,19 @@ void Insert(struct node *v_r, int value, struct node *v_r_fa, int child){
         Insert(v_r->right, value, v_r, 1);
     else{
         v_r->tag = 0;
+        pthread_mutex_unlock(v_r->subtree_pass);
     }
 
-    // lock transfer from here to father
-    exit_function(v_r, v_r_fa);
+    // no need code below anymore, for the easy pattern (one link through root to the target node) of this function
+    // // lock transfer from here to father
+    // exit_function(v_r, v_r_fa);
 }
 
 void Delete(struct node *v_r, int value, struct node *v_r_fa){
-    if (v_r == NULL)
+    if (v_r == NULL){
+        pthread_mutex_unlock(v_r_fa->subtree_pass); // important, don't forget to release the father's lock
         return;
+    }
 
     // lock transfer from father to here
     enter_function(v_r, v_r_fa);
@@ -121,10 +129,12 @@ void Delete(struct node *v_r, int value, struct node *v_r_fa){
         Delete(v_r->right, value, v_r);
     else{
         v_r->tag = 1;
+        pthread_mutex_unlock(v_r->subtree_pass);
     }
 
-    // lock transfer from here to father
-    exit_function(v_r, v_r_fa);
+    // no need code below anymore, for the easy pattern (one link through root to the target node) of this function
+    // // lock transfer from here to father
+    // exit_function(v_r, v_r_fa);
 }
 
 void *handler(void *null){
@@ -142,13 +152,11 @@ void *handler(void *null){
             // Insert
             pthread_mutex_lock(root->subtree_pass);
             Insert(root->right, val, root, 1);
-            pthread_mutex_unlock(root->subtree_pass);
         }
         else if (opt == 2){
             // Delete
             pthread_mutex_lock(root->subtree_pass);
             Delete(root->right, val, root);
-            pthread_mutex_unlock(root->subtree_pass);
         }
         else if (opt == 3){
             // look_up
