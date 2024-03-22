@@ -13,10 +13,11 @@ with open("log.tmp", "r") as f:
                 sample_id = 1
                 Index += 1
             # Get min, most similar to the real time without system scheduling
+            run_time = float(line.split('m')[1][:-2])
             if Index == 128:
-                Y_lazy = min(Y_lazy, float(line[-7:-2]))
+                Y_lazy = min(Y_lazy, run_time)
             else:
-                Y_parallel[Index] = min(Y_parallel[Index], float(line[-7:-2]))
+                Y_parallel[Index] = min(Y_parallel[Index], run_time)
 
 
 plt.plot(X, Y_parallel, color='r', label='ParallelBT')
