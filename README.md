@@ -1,4 +1,5 @@
 ## 0. Initilize
+- all commands below should be executed under this working dir
 ```bash
 mkdir bin
 mkdir data
@@ -17,7 +18,7 @@ make clean
 ## 2. Run raw bin
 ### 2.1 Data Generator: `datagen.run`
 ```bash
-./datagen.run $number_of_operations $upper_bound_of_value > $data_file
+./bin/datagen.run $number_of_operations $upper_bound_of_value > $data_file
 ```
 - This will generate data with $number_of_operations operations into $data_file
 - All the values generated will be in [1, $upper_bound_of_value]
