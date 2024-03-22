@@ -15,16 +15,27 @@ struct node *new_node(int value){
     return ret;
 }
 
+void free_node(struct node *v_r){
+    free(v_r);
+}
+
 void free_tree(struct node *v_r){
     if (v_r == NULL)
         return;
     free_tree(v_r->left);
     free_tree(v_r->right);
-    free(v_r);
+    free_node(v_r);
 }
 
 void print_off(int offset){
     while(offset--) putchar(' ');
+}
+
+struct node **get_fa2chd_pointer(struct node *v_r_fa, int child){
+    if (child == 0)
+        return &(v_r_fa->left);
+    else 
+        return &(v_r_fa->right);
 }
 
 void display(struct node *v_r, int offset){
@@ -50,30 +61,30 @@ int look_up(struct node *v_r, int value){
         return 1;
 }
 
-struct node *Insert(struct node *v_r, int value){
-    if (v_r == NULL)
-        return new_node(value);
+void Insert(struct node *v_r, int value, struct node *v_r_fa, int child){
+    if (v_r == NULL){
+        *get_fa2chd_pointer(v_r_fa, child) = new_node(value);
+        return;
+    }
     if (value <= v_r->val)
-        v_r->left = Insert(v_r->left, value);
+        Insert(v_r->left, value, v_r, 0);
     else
-        v_r->right = Insert(v_r->right, value);
-    return v_r;
+        Insert(v_r->right, value, v_r, 1);
 }
 
-struct node *Delete(struct node *v_r, int value){
+void Delete(struct node *v_r, int value, struct node *v_r_fa, int child){
     if (v_r == NULL)
-        return v_r;
+        return;
     if (value < v_r->val)
-        v_r->left = Delete(v_r->left, value);
+        Delete(v_r->left, value, v_r, 0);
     else if (value > v_r->val)
-        v_r->right = Delete(v_r->right, value);
+        Delete(v_r->right, value, v_r, 1);
     else{
         // find the node to be deleted
         if (!v_r->right){
             // case 1: Root has no right child
-            struct node *to_delete = v_r;
-            v_r = v_r->left;
-            free(to_delete);
+            *get_fa2chd_pointer(v_r_fa, child) = v_r->left;
+            free_node(v_r);
         }
         else{
             struct node *nxt, *nxt_parent;
@@ -89,24 +100,24 @@ struct node *Delete(struct node *v_r, int value){
             else
                 nxt_parent->left = nxt->right;
             v_r->val = nxt->val;
-            free(nxt);
+            free_node(nxt);
         }
     }
-
-    return v_r;
 }
 
 void handler(){
-    struct node *root;
+    // add a virtual global minimum root, which can help our later parallel programming.
+    struct node *root = new_node(~0);
+        // and passed the test against LazyBT
     int opt, val;
     while(scanf("%d %d", &opt, &val) == 2){
         if (opt == 1){
             // Insert
-            root = Insert(root, val);
+            Insert(root->right, val, root, 1);
         }
         else if (opt == 2){
             // Delete
-            root = Delete(root, val);
+            Delete(root->right, val, root, 1);
         }
         else if (opt == 3){
             // look_up
