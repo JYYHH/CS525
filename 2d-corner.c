@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <mpi.h>
+#include <string.h>
 
-#define MATRIX_SIZE 2048
-#define VECTOR_SIZE 2048
+int MATRIX_SIZE = 2048;
+int VECTOR_SIZE = 2048;
 
 void matvecmul_2d_partition(double *matrix_block, double *vector_block, double *result_block, int block_rows, int block_cols) {
     for (int i = 0; i < block_rows; i++) {
@@ -20,6 +21,18 @@ int main(int argc, char **argv) {
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    // Parse command line arguments
+    if (argc == 3 && strcmp(argv[1], "-w") == 0) {
+        MATRIX_SIZE = VECTOR_SIZE = atoi(argv[2]);
+    } else if (argc != 1) {
+        if (rank == 0) {
+            printf("Usage: %s [-w matrix_size]\n", argv[0]);
+        }
+        MPI_Finalize();
+        return 1;
+    }
+
     if (size % 2 != 0) {
         if (rank == 0) {
             printf("Error: Matrix size should be divisible by the number of processors, and the number of processors should be even.\n");
